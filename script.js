@@ -133,7 +133,7 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 // Observe all animated elements
-const animatedElements = document.querySelectorAll('.section-title, .divider, .about-card, .feature-item');
+const animatedElements = document.querySelectorAll('.section-title, .divider, .about-card, .feature-item, .video-card');
 animatedElements.forEach(el => observer.observe(el));
 
 // Smooth scroll for navigation
@@ -330,6 +330,56 @@ ctaButtons.forEach(button => {
 
     button.addEventListener('mouseleave', () => {
         button.style.transform = '';
+    });
+});
+
+// Video card animations
+const videoCards = document.querySelectorAll('.video-card');
+
+const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.classList.add('visible');
+            }, index * 100);
+        }
+    });
+}, observerOptions);
+
+videoCards.forEach(card => {
+    videoObserver.observe(card);
+
+    // Add hover effect for play button
+    const playButton = card.querySelector('.play-button');
+    card.addEventListener('mouseenter', () => {
+        if (playButton) {
+            playButton.style.animationPlayState = 'paused';
+        }
+    });
+
+    card.addEventListener('mouseleave', () => {
+        if (playButton) {
+            playButton.style.animationPlayState = 'running';
+        }
+    });
+
+    // Add tilt effect on mouse move
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+
+        card.style.transform = `translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
     });
 });
 
